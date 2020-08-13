@@ -29,6 +29,6 @@ def create_app():
     app.config.from_object(ProductionConfig)
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     os.getcwd()
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////'+os.getcwd()+'/backend/database.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
     return app
