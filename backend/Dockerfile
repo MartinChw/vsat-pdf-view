@@ -4,5 +4,6 @@ ENV TZ=Asia/Shanghai
 ENV LANG C.UTF-8
 WORKDIR /app
 COPY . /app
+RUN apt-get update && apt-get -y install poppler-utils && apt-get clean
 RUN pip3 install -r requirements.txt -i "https://pypi.doubanio.com/simple/"
 CMD python3 run.py
