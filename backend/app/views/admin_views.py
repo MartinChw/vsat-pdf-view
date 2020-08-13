@@ -59,7 +59,7 @@ def handlerCreatePdf():
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            filepath = os.path.join(os.getcwd(), 'backend', 'uploads',
+            filepath = os.path.join(os.getcwd(), 'uploads',
                                     filename)
             file.save(filepath)
             url_prefix, page_size = upload_image_to_aliyun(title, filepath)
