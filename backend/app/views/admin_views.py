@@ -19,14 +19,13 @@ def login():
     username = request.form.get('username', None)
     password = request.form.get('password', None)
     if not username:
-        return {"code": 0, "msg": "Missing username parameter"}, 400
+        return {"code": 10001, "msg": "Missing username parameter"}, 200
     if not password:
-        return {"msg": "Missing password parameter"}, 400
+        return {"code": 10001, "msg": "Missing password parameter"}, 200
 
     if username != 'admin' or password != PASSWORD:
-        return {"msg": "Bad username or password"}, 401
+        return {"code": 10001, "msg": "Bad username or password"}, 200
 
-    # Identity can be any data that is json serializable
     access_token = create_access_token(identity=username)
     return {
         "code": 0,
@@ -59,8 +58,7 @@ def handlerCreatePdf():
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            filepath = os.path.join(os.getcwd(), 'uploads',
-                                    filename)
+            filepath = os.path.join(os.getcwd(), 'uploads', filename)
             print(filepath)
             file.save(filepath)
             url_prefix, page_size = upload_image_to_aliyun(title, filepath)

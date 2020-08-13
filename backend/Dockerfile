@@ -1,9 +1,10 @@
-FROM python:3.7-buster
+FROM python:3
 USER root
 ENV TZ=Asia/Shanghai
-ENV LANG C.UTF-8
 WORKDIR /app
 COPY . /app
+RUN sed -i 's/security.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list
+RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list
 RUN apt-get update && apt-get -y install poppler-utils && apt-get clean
-RUN pip3 install -r requirements.txt -i "https://pypi.doubanio.com/simple/"
+RUN pip install -r requirements.txt -i "https://pypi.doubanio.com/simple/"
 CMD python3 run.py

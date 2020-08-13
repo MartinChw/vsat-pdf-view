@@ -7,12 +7,12 @@ import qs from "qs";
 
 const service = axios.create({
   baseURL:
+    // process.env.NODE_ENV == "development"
+    //   ? "http://106.15.225.113:9527/api/v1"
+    //   : "http://106.15.225.113:9527/api/v1",
     process.env.NODE_ENV == "development"
-      ? "http://106.15.225.113:9527/api/v1"
-      : "http://106.15.225.113:9527/api/v1",
-  // process.env.NODE_ENV == "development"
-  //   ? "http://127.0.0.1:9527/api/v1"
-  //   : "http://127.0.0.1:9527/api/v1",
+      ? "http://127.0.0.1:9527/api/v1"
+      : "http://127.0.0.1:9527/api/v1",
   timeout: 60000, // 请求超时时间
   withCredentials: true,
   headers: {
@@ -55,9 +55,22 @@ service.interceptors.response.use(
         type: "error",
         duration: 5 * 1000,
       });
-
-      // 10005:Token 过期了;
-      if (res.code === 10005) {
+      return Promise.reject("error");
+    } else {
+      return response.data;
+    }
+  },
+  (err) => {
+    switch (err.response.status) {
+      case 400:
+        msg = err.response.msg;
+        Message({
+          message: msg,
+          type: "error",
+          duration: 5 * 1000,
+        });
+        break;
+      case 401:
         MessageBox.confirm(
           "你已被登出，可以取消继续留在该页面，或者重新登录",
           "确定登出",
@@ -67,30 +80,19 @@ service.interceptors.response.use(
             type: "warning",
           }
         ).then(() => {
-          location.reload(); // 为了重新实例化vue-router对象 避免bug
-          this.$router.push({ path: "/login" });
+          window.location = "/auth";
         });
-      }
-      // if (res.code === 10004 ) {
-      //   location.href = "/login"
-      // }
-      return Promise.reject("error");
-    } else {
-      // if (response.headers["token-refresh"]) {
-      //   setToken(response.headers["token-refresh"]);
-      // }
-
-      return response.data;
+        break;
+      case 500:
+        Message({
+          message: "服务器内部错误，请联系管理员",
+          type: "error",
+          duration: 5 * 1000,
+        });
+        break;
+      default:
+        break;
     }
-  },
-  (error) => {
-    console.log("err" + error); // for debug
-    Message({
-      message: error.message,
-      type: "error",
-      duration: 5 * 1000,
-    });
-    return Promise.reject(error);
   }
 );
 export default service;
