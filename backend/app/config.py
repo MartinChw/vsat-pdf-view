@@ -3,8 +3,8 @@ class ProductionConfig():
         'id': 'update_password',
         'func': 'app.jobs:update_password',
         'trigger': 'cron',
-        'hour': 0,
-        'minute': 30,
+        'hour': 1,
+        'minute': 0,
         'day': 1,
     }]
     SCHEDULER_API_ENABLED = True

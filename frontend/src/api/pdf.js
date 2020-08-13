@@ -31,3 +31,11 @@ export function updatePdf(data) {
     data,
   });
 }
+
+export function listPdfLog(param) {
+  return request({
+    url: "/pdf/log",
+    method: "get",
+    params: param,
+  });
+}

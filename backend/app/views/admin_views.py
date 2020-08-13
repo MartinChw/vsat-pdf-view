@@ -5,7 +5,7 @@ from flask import Blueprint, request
 from flask_jwt_extended import create_access_token, jwt_required
 from werkzeug.utils import secure_filename
 from app.db.models import Pdf
-from app.db.dao import create_pdf, list_pdf, get_pdf, update_pdf, get_pdf_by_id
+from app.db.dao import create_pdf, list_pdf, get_pdf, update_pdf, get_pdf_by_id, list_pdf_log
 from app.db.dao import has_pdf_by_title
 from app.utils.common import args_strip
 from app.utils.pdf import upload_image_to_aliyun, gen_random_word, gen_random_password
@@ -100,6 +100,16 @@ def handlerListPdf():
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', 10))
     items, count = list_pdf(page, limit)
+    data = {"items": items, "count": count}
+    return {"code": 0, "data": data}, 200
+
+
+@ns.route('/pdf/log', methods=['GET'])
+@jwt_required
+def handlerListPdfLog():
+    page = int(request.args.get('page', 1))
+    limit = int(request.args.get('limit', 10))
+    items, count = list_pdf_log(page, limit)
     data = {"items": items, "count": count}
     return {"code": 0, "data": data}, 200
 

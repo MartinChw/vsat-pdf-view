@@ -32,3 +32,13 @@ class Pdf(db.Model, Common):
     page_size = db.Column(db.INTEGER)
     format = db.Column(db.String(50), default="JPEG")
     open = db.Column(db.Boolean, default=True)
+
+
+class PdfLog(db.Model, Common):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    create_at = db.Column('create_at', db.DateTime, default=datetime.datetime.now)
+    action = db.Column(db.String(50))
+    pdf_id = db.Column(db.INTEGER)
+    old = db.Column(db.TEXT)
+    new = db.Column(db.TEXT)
+    who = db.Column(db.String(50))
