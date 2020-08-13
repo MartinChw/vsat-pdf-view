@@ -1,27 +1,9 @@
-from flask import Flask
-from flask_cors import CORS
-from flask_jwt_extended import JWTManager
-
+from app import create_app, jwt
 from app.db import db, reset_database
-from app.views.admin_views import ns as admin_view
 
-app = Flask(__name__)
+app = create_app()
 
-cors = CORS(app,
-            supports_credentials=True,
-            resources={
-                r'/api/*': {
-                    'origins': '*',
-                    'allow_headers': ['Content-Type', 'Authorization']
-                }
-            })
-app.register_blueprint(admin_view)
-app.config['JWT_SECRET_KEY'] = 'super-secret'  # Change this!
-jwt = JWTManager(app)
-UPLOAD_FOLDER = '/uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
+jwt.init_app(app)
 db.init_app(app)
 with app.app_context():
     reset_database()

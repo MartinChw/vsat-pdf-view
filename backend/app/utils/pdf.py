@@ -18,7 +18,7 @@ def gen_random_word(num):
     salt = ''.join(sa)
     return salt
 
-print(gen_random_word(8))
+
 def gen_random_password(num):
     seed = "1234567890abcdefghijklmnopqrstuvwxyz"
     sa = []
@@ -37,8 +37,7 @@ def upload_image_to_aliyun(title, pdf_path):
         os.rename(os.path.join(path, jpg),
                   os.path.join(path,
                                str(int(jpg_index)) + '.jpg'))
-        auth = oss2.Auth(KEY,
-                         SECRET)
+        auth = oss2.Auth(KEY, SECRET)
         headers = {}
         headers["x-oss-forbid-overwrite"] = "true"
         bucket = oss2.Bucket(auth, 'http://oss-cn-shanghai.aliyuncs.com',

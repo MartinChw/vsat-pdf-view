@@ -6,8 +6,3 @@ services:
     ports:
       - "9527:5000"
     restart: always
-  frontend:
-    build:
-      context: ./frontend/
-    volumes:
-      - "~/pdf-view/frontend:/app/frontend"
