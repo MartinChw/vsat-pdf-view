@@ -1,10 +1,11 @@
+import json
 import os
 
 from flask import Blueprint, request
 from flask_jwt_extended import create_access_token, jwt_required
 from werkzeug.utils import secure_filename
 from app.db.models import Pdf
-from app.db.dao import create_pdf, list_pdf, get_pdf
+from app.db.dao import create_pdf, list_pdf, get_pdf, update_pdf, get_pdf_by_id
 from app.db.dao import has_pdf_by_title
 from app.utils.common import args_strip
 from app.utils.pdf import upload_image_to_aliyun, gen_random_word, gen_random_password
@@ -95,8 +96,8 @@ def handlerCreatePdf():
 @ns.route('/pdf', methods=['GET'])
 @jwt_required
 def handlerListPdf():
-    page = request.form.get('page', 1)
-    limit = request.form.get('limit', 10)
+    page = int(request.args.get('page', 1))
+    limit = int(request.args.get('limit', 10))
     items, count = list_pdf(page, limit)
     data = {"items": items, "count": count}
     return {"code": 0, "data": data}, 200
@@ -110,4 +111,35 @@ def handlerGetPdf():
     data = get_pdf(uuid)
     if data is None:
         return {"code": 10001, "msg": "未找到文件"}, 200
+    return {"code": 0, "data": data}, 200
+
+
+@ns.route('/pdf/item', methods=['PUT'])
+def handlerUpdatePdf():
+    args = json.loads(request.data)
+    id = args.get('id', None)
+    if id is None:
+        return {"code": 10001, "msg": "无效的id"}, 200
+    uuid = args.get('uuid', None)
+    if uuid is None or uuid.strip() == '':
+        return {"code": 10001, "msg": "无效的uuid"}, 200
+    password = args.get('password', None)
+    if password is None or password.strip() == '':
+        return {"code": 10001, "msg": "无效的password"}, 200
+    url_prefix = args.get('url_prefix', None)
+    if url_prefix is None or url_prefix.strip() == '':
+        return {"code": 10001, "msg": "无效的url_prefix"}, 200
+    title = args.get('title', None)
+    if title is None or title.strip() == '':
+        return {"code": 10001, "msg": "无效的title"}, 200
+    page_size = args.get('page_size', None)
+    if page_size is None:
+        return {"code": 10001, "msg": "无效的page_size"}, 200
+    data = get_pdf_by_id(uuid, id)
+    if data is not None:
+        return {"code": 10001, "msg": "uuid已存在，请更换新的uuid"}, 200
+    try:
+        update_pdf(args)
+    except Exception as e:
+        return {"code": 10001, "msg": str(e)}, 200
     return {"code": 0, "data": data}, 200

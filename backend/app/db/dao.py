@@ -37,11 +37,30 @@ def list_pdf(page, limit):
     if data:
         for item in data:
             items.append(item.to_dict())
-    return items,count
+    return items, count
 
 
 def get_pdf(uuid):
     item = Pdf.query.filter(Pdf.uuid == uuid).first()
     if item is None:
         return None
+    return item.to_dict()
+
+
+def get_pdf_by_id(uuid, id):
+    item = Pdf.query.filter(Pdf.uuid == uuid, Pdf.id != id).first()
+    if item is None:
+        return None
+    return item.to_dict()
+
+
+def update_pdf(update_dict):
+    item = Pdf.query.filter(Pdf.id == update_dict['id']).first()
+    if item is None:
+        raise Exception("记录不存在")
+    for key in update_dict:
+        if key == 'id':
+            continue
+        setattr(item, key, update_dict[key])
+    db.session().commit()
     return item.to_dict()

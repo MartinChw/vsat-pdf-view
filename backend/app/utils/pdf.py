@@ -18,7 +18,7 @@ def gen_random_word(num):
     salt = ''.join(sa)
     return salt
 
-
+print(gen_random_word(8))
 def gen_random_password(num):
     seed = "1234567890abcdefghijklmnopqrstuvwxyz"
     sa = []

@@ -2,10 +2,13 @@
   <div class="home">
     <div class="title"><h1>PDF LIST</h1></div>
     <el-table :data="list" style="width: 100%">
-      <el-table-column prop="title" label="title" width="100">
+      <el-table-column prop="title" label="title" width="300">
       </el-table-column>
       <el-table-column prop="uuid" label="uuid" width="80"> </el-table-column>
-      <el-table-column prop="url_prefix" label="url-prefix" width="400">
+      <el-table-column label="url-prefix">
+        <template slot-scope="scope">
+          <span class="url-prefix">{{ scope.row.url_prefix }}</span>
+        </template>
       </el-table-column>
       <el-table-column label="pwd" width="120">
         <template slot-scope="scope">
@@ -22,7 +25,12 @@
           <el-button type="primary" size="small" @click="openPdf(scope.row)"
             >Open</el-button
           >
-          <el-button type="primary" size="small">Update</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="showUpdatePdf(scope.row)"
+            >Update</el-button
+          >
           <el-button type="primary" size="small" @click="infoCopy(scope.row)"
             >Copy</el-button
           >
@@ -34,14 +42,15 @@
         type="primary"
         size="small"
         style="float:left"
-        @click="dialogVisible = true"
+        @click="showCreatePdf()"
         >Create</el-button
       >
       <el-pagination
         background
         layout="prev, pager, next"
-        :current-page="page"
-        :page-size="size"
+        :current-page.sync="page"
+        @current-change="hanlderListPdf()"
+        :page-size.sync="size"
         :total="count"
         style="float:right"
       >
@@ -56,18 +65,27 @@
         <el-form-item label="title" required>
           <el-input v-model="pdf.title"></el-input>
         </el-form-item>
+        <template v-if="action == 'update'">
+          <el-form-item label="password" required>
+            <el-input v-model="pdf.password" show-password></el-input>
+          </el-form-item>
+        </template>
         <template v-if="!upload">
           <el-form-item label="uuid" required>
             <el-input v-model="pdf.uuid"></el-input>
           </el-form-item>
           <el-form-item label="url_prefix" required>
-            <el-input v-model="pdf.url_prefix"></el-input>
+            <el-input
+              type="textarea"
+              :autosize="{ minRows: 2, maxRows: 4 }"
+              v-model="pdf.url_prefix"
+            ></el-input>
           </el-form-item>
           <el-form-item label="page_size" required>
             <el-input v-model="pdf.page_size"></el-input>
           </el-form-item>
         </template>
-        <el-form-item label="pdf-file" align="left">
+        <el-form-item label="pdf-file" align="left" v-if="action == 'create'">
           <el-switch v-model="upload" active-text="Upload File"> </el-switch>
           <el-upload
             v-if="upload"
@@ -88,7 +106,11 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="handleCreatePdf()">Save</el-button>
+        <el-button
+          type="primary"
+          @click="action == 'create' ? handleCreatePdf() : handleUpdatePdf()"
+          >Save</el-button
+        >
       </span>
     </el-dialog>
   </div>
@@ -96,11 +118,16 @@
 
 <script>
 import { setToken } from "@/utils/auth";
-import { listPdf, createPdf } from "@/api/pdf";
+import { listPdf, createPdf, updatePdf } from "@/api/pdf";
 export default {
   name: "home",
   data() {
     return {
+      action_map: {
+        update: "update",
+        create: "create",
+      },
+      action: "create",
       show: false,
       upload: true,
       list: [],
@@ -125,7 +152,7 @@ export default {
   },
   methods: {
     hanlderListPdf() {
-      listPdf().then((res) => {
+      listPdf({ page: this.page, limit: this.size }).then((res) => {
         this.list = res.data.items;
         this.count = res.data.count;
       });
@@ -205,7 +232,6 @@ export default {
       document.body.removeChild(textArea);
     },
     handleCreatePdf() {
-      this.dialogVisible = false;
       let formData = new FormData();
       formData.append("title", this.pdf.title);
 
@@ -222,6 +248,28 @@ export default {
           type: "success",
         });
         this.hanlderListPdf();
+        this.dialogVisible = false;
+      });
+    },
+    showUpdatePdf(row) {
+      this.pdf = row;
+      this.dialogVisible = true;
+      this.action = "update";
+      this.upload = false;
+    },
+    showCreatePdf() {
+      this.dialogVisible = true;
+      this.action = "create";
+      this.upload = true;
+    },
+    handleUpdatePdf() {
+      updatePdf(this.pdf).then((res) => {
+        this.$message({
+          message: "SUCCESS",
+          type: "success",
+        });
+        this.hanlderListPdf();
+        this.dialogVisible = false;
       });
     },
   },
@@ -237,5 +285,12 @@ export default {
 .table-pwd >>> input {
   border: 0 !important;
   background-color: transparent !important;
+}
+
+.home >>> .url-prefix {
+  vertical-align: middle;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 </style>

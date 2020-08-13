@@ -23,3 +23,11 @@ export function createPdf(data) {
     data,
   });
 }
+
+export function updatePdf(data) {
+  return request({
+    url: "/pdf/item",
+    method: "put",
+    data,
+  });
+}
