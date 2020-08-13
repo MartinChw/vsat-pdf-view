@@ -9,6 +9,7 @@ from app.db.dao import create_pdf, list_pdf, get_pdf, update_pdf, get_pdf_by_id
 from app.db.dao import has_pdf_by_title
 from app.utils.common import args_strip
 from app.utils.pdf import upload_image_to_aliyun, gen_random_word, gen_random_password
+from config import PASSWORD
 
 ns = Blueprint('admin api', __name__, url_prefix="/api/v1")
 
@@ -22,7 +23,7 @@ def login():
     if not password:
         return {"msg": "Missing password parameter"}, 400
 
-    if username != 'admin' or password != 'admin':
+    if username != 'admin' or password != PASSWORD:
         return {"msg": "Bad username or password"}, 401
 
     # Identity can be any data that is json serializable
