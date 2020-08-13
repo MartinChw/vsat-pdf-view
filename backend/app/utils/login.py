@@ -1,4 +1,4 @@
-from werkzeug.security import safe_str_cmp
+from config import PASSWORD
 
 
 class User(object):
@@ -12,7 +12,7 @@ class User(object):
 
 
 users = [
-    User(1, 'admin', 'o0WQLZL58wkx88bEmmJ4'),
+    User(1, 'admin', PASSWORD),
 ]
 
 username_table = {u.username: u for u in users}

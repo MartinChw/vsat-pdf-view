@@ -173,7 +173,7 @@ export default {
     },
     openPdf(row) {
       this.$router.push({
-        path: "pdf/" + row.uuid,
+        path: "/" + row.uuid,
         query: { pwd: row.password },
       });
     },

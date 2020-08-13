@@ -18,7 +18,7 @@ export default new Router({
       component: List,
     },
     {
-      path: "/pdf/:url",
+      path: "/:url",
       name: "plan",
       component: Home,
     },

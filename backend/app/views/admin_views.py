@@ -115,6 +115,7 @@ def handlerGetPdf():
 
 
 @ns.route('/pdf/item', methods=['PUT'])
+@jwt_required
 def handlerUpdatePdf():
     args = json.loads(request.data)
     id = args.get('id', None)
