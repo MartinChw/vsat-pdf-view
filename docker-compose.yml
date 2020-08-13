@@ -5,4 +5,6 @@ services:
       context: ./backend/
     ports:
       - "9527:5000"
+    volumes:
+      - "/root/workspace/vsat-pdf-view/database.db:/app/app/database.db"
     restart: always
