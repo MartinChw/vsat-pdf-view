@@ -1,0 +1,13 @@
+version: '3.4'
+services:
+  backend:
+    build:
+      context: ./backend/
+    ports:
+      - "9527:5000"
+    restart: always
+  frontend:
+    build:
+      context: ./frontend/
+    volumes:
+      - "~/pdf-view/frontend:/app/frontend"
