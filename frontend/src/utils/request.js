@@ -11,9 +11,9 @@ const service = axios.create({
       ? "http://106.15.225.113:9527/api/v1"
       : "http://106.15.225.113:9527/api/v1",
   // process.env.NODE_ENV == "development"
-  //   ? "http://127.0.0.1:5000/api/v1"
-  //   : "http://127.0.0.1:5000/api/v1",
-  timeout: 15000, // 请求超时时间
+  //   ? "http://127.0.0.1:9527/api/v1"
+  //   : "http://127.0.0.1:9527/api/v1",
+  timeout: 60000, // 请求超时时间
   withCredentials: true,
   headers: {
     "Content-Type": "application/json; charse=UTF-8",
