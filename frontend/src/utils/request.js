@@ -8,8 +8,8 @@ import qs from "qs";
 const service = axios.create({
   baseURL:
     process.env.NODE_ENV == "development"
-      ? "http://127.0.0.1:5000/api/v1"
-      : "http://localhost:5000/api/v1",
+      ? "http://106.15.225.113:9527/api/v1"
+      : "http://106.15.225.113:9527/api/v1",
   timeout: 15000, // 请求超时时间
   withCredentials: true,
   headers: {
