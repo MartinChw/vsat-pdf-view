@@ -30,6 +30,7 @@ def gen_random_password(num):
 
 def upload_image_to_aliyun(title, pdf_path):
     path = tempfile.mkdtemp(dir=os.getcwd())
+    print(path)
     convert_from_path(pdf_path, fmt="JPEG", output_folder=path, thread_count=1)
     url_prefix = parse.quote(title) + '/'
     for index, jpg in enumerate(os.listdir(path)):
@@ -38,8 +39,7 @@ def upload_image_to_aliyun(title, pdf_path):
                   os.path.join(path,
                                str(int(jpg_index)) + '.jpg'))
         auth = oss2.Auth(KEY, SECRET)
-        headers = {}
-        headers["x-oss-forbid-overwrite"] = "true"
+        headers = {"x-oss-forbid-overwrite": "true"}
         bucket = oss2.Bucket(auth, 'http://oss-cn-shanghai.aliyuncs.com',
                              'vsat-pdf')
         objectName = title + "/" + str(int(jpg_index)) + '.jpg'

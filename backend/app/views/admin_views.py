@@ -61,6 +61,7 @@ def handlerCreatePdf():
             filename = secure_filename(file.filename)
             filepath = os.path.join(os.getcwd(), 'uploads',
                                     filename)
+            print(filepath)
             file.save(filepath)
             url_prefix, page_size = upload_image_to_aliyun(title, filepath)
             pdf = Pdf(
